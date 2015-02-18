@@ -1,5 +1,6 @@
 package org.ronsmits.plantuml;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Created by ron on 17-2-15.
  */
-public class TextEditor extends JPanel {
+public class TextEditor extends JPanel implements TextListener {
 
     private final List<TextListener> listeners;
     private final JButton button;
@@ -18,15 +19,24 @@ public class TextEditor extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             notifyListeners(area.getText());
-            int caretPosition = area.getCaretPosition();
-            area.insert("\n", caretPosition);
+            area.insert("\n", area.getCaretPosition());
         }
     };
 
+    /**
+     * Constructor for an empty drawing.
+     *
+     * @param listeners
+     */
     TextEditor(List<TextListener> listeners) {
         this(listeners, "@startuml\n\n@enduml\n");
     }
 
+    /**
+     * Constructor with a loaded drawing.
+     * @param listeners
+     * @param text
+     */
     TextEditor(List<TextListener> listeners, String text) {
         this.listeners = listeners;
         setLayout(new BorderLayout(5, 5));
@@ -36,7 +46,6 @@ public class TextEditor extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("actionevent is " + e.getSource());
                 notifyListeners(area.getText());
             }
         });
@@ -54,5 +63,16 @@ public class TextEditor extends JPanel {
         KeyStroke enter = KeyStroke.getKeyStroke("ENTER");
         Object actionKey = area.getInputMap(WHEN_FOCUSED).get(enter);
         area.getActionMap().put(actionKey, wrapper);
+    }
+
+    /**
+     * called when a file is loaded. Will set the text and update the graphics.
+     *
+     * @param text content that is changed
+     */
+    @Override
+    public void textUpdated(String text) {
+        area.setText(text);
+        button.doClick();
     }
 }

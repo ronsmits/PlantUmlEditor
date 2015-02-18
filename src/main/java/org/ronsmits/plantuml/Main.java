@@ -5,19 +5,21 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.awt.EventQueue.invokeLater;
+
 /**
- * Created by ron on 17-2-15.
+ * Main entry point for the program.
  */
-public class Main extends JFrame {
+class Main extends JFrame {
 
-    List<TextListener> listenerList = new ArrayList<TextListener>();
+    private List<TextListener> listenerList = new ArrayList<>();
 
-    Main() {
+    private Main() {
         initUI();
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
+        invokeLater(new Runnable() {
             @Override
             public void run() {
                 Main main = new Main();
@@ -29,12 +31,17 @@ public class Main extends JFrame {
     private void initUI() {
         setTitle("PlantUML Editor");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        setSize(640, 480);
+        setSize(640, 480);
+        setMinimumSize(new Dimension(640, 480));
         setLocationRelativeTo(null);
-        add(new TextEditor(listenerList), BorderLayout.WEST);
+        TextEditor textEditor = new TextEditor(listenerList);
+        add(textEditor, BorderLayout.WEST);
         Drawing drawing = new Drawing();
         add(drawing, BorderLayout.CENTER);
         listenerList.add(drawing);
+        MenuBar menuBar = new MenuBar(textEditor);
+        listenerList.add(menuBar);
+        setJMenuBar(menuBar);
         pack();
     }
 }

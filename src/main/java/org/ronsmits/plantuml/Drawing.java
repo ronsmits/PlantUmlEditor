@@ -19,7 +19,9 @@ public class Drawing extends JPanel implements TextListener {
     private BufferedImage bufferedImage;
 
     Drawing() {
-        setMinimumSize(new Dimension(640, 480));
+        Dimension minimumSize = new Dimension(640, 480);
+        setMinimumSize(minimumSize);
+        setSize(minimumSize);
     }
 
     @Override
@@ -28,6 +30,7 @@ public class Drawing extends JPanel implements TextListener {
         SourceStringReader reader = new SourceStringReader(text);
         try {
             String desc = reader.generateImage(bous);
+            System.out.println(desc);
             byte[] data = bous.toByteArray();
 
             InputStream in = new ByteArrayInputStream(data);
