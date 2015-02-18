@@ -14,8 +14,8 @@ import java.net.URL;
  */
 public class MenuBar extends JMenuBar implements TextListener {
 
+    private final TextListener listener;
     private String currentGraph = "";
-    private TextListener listener;
 
     MenuBar(TextListener textListener) {
         listener = textListener;
@@ -36,15 +36,27 @@ public class MenuBar extends JMenuBar implements TextListener {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Desktop.getDesktop().browse(new URL("http://plantuml.sourceforge.net").toURI());
-                } catch (IOException | URISyntaxException e1) {
-                    e1.printStackTrace();
-                }
+                openWebPage("http://plantuml.sourceforge.net");
             }
         });
         aboutMenu.add(menuItem);
+        JMenuItem github = makeMenuItem("source", KeyEvent.VK_S, "the source on github");
+        github.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openWebPage("https://github.com/ronsmits/PlantUmlEditor");
+            }
+        });
+        aboutMenu.add(github);
 
+    }
+
+    private void openWebPage(String urlString) {
+        try {
+            Desktop.getDesktop().browse(new URL(urlString).toURI());
+        } catch (IOException | URISyntaxException e1) {
+            e1.printStackTrace();
+        }
     }
 
     private void setupFileMenu() {

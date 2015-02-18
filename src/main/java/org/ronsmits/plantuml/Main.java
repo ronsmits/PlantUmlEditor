@@ -12,7 +12,7 @@ import static java.awt.EventQueue.invokeLater;
  */
 class Main extends JFrame {
 
-    private List<TextListener> listenerList = new ArrayList<>();
+    private final List<TextListener> listenerList = new ArrayList<>();
 
     private Main() {
         initUI();

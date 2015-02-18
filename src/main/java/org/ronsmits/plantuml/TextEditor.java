@@ -14,8 +14,8 @@ public class TextEditor extends JPanel implements TextListener {
 
     private final List<TextListener> listeners;
     private final JButton button;
-    private JTextArea area;
-    private Action wrapper = new AbstractAction() {
+    private final JTextArea area;
+    private final Action wrapper = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
             notifyListeners(area.getText());
