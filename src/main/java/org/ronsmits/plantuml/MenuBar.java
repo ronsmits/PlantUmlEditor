@@ -1,10 +1,12 @@
 package org.ronsmits.plantuml;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -51,21 +53,41 @@ public class MenuBar extends JMenuBar implements TextListener {
 
     }
 
-    private void openWebPage(String urlString) {
-        try {
-            Desktop.getDesktop().browse(new URL(urlString).toURI());
-        } catch (IOException | URISyntaxException e1) {
-            e1.printStackTrace();
-        }
-    }
-
     private void setupFileMenu() {
         JMenu fileMenu = new JMenu("File");
         add(fileMenu);
         fileMenu.setMnemonic(KeyEvent.VK_F);
         fileMenu.add(setupLoadMenu());
         fileMenu.add(setupSaveMenu());
+        fileMenu.add(savePngMenu());
         fileMenu.add(setupExitMenu());
+    }
+
+    private JMenuItem savePngMenu() {
+        JMenuItem menuItem = makeMenuItem("save graphics", KeyEvent.VK_G, "Save as PNG file");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BufferedImage bufferedImage = Utils.createImage(currentGraph);
+                try {
+                    saveBufferedImage(bufferedImage);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        return menuItem;
+    }
+
+    private void saveBufferedImage(BufferedImage bufferedImage) throws IOException {
+        JFrame frame = new JFrame();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save as PNG file");
+        int option = fileChooser.showSaveDialog(frame);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            ImageIO.write(bufferedImage, "png", file);
+        }
     }
 
     private JMenuItem setupLoadMenu() {
@@ -102,6 +124,7 @@ public class MenuBar extends JMenuBar implements TextListener {
                 saveFile();
             }
         });
+
         return menuItem;
     }
 
@@ -138,5 +161,13 @@ public class MenuBar extends JMenuBar implements TextListener {
             }
         });
         return eMenuItem;
+    }
+
+    private void openWebPage(String urlString) {
+        try {
+            Desktop.getDesktop().browse(new URL(urlString).toURI());
+        } catch (IOException | URISyntaxException e1) {
+            e1.printStackTrace();
+        }
     }
 }
